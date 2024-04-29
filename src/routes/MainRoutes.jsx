@@ -5,6 +5,8 @@ import AddProduct from "../pages/AddProduct";
 import About from "../pages/About";
 import ProductDetail from "../pages/ProductDetail";
 import EditProduct from "../pages/EditProduct";
+import Cart from "../pages/Cart";
+
 
 const mainRoutes = [
   {
@@ -34,6 +36,10 @@ const mainRoutes = [
       {
         path: "update/product/:id",
         element: <EditProduct />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
       },
     ],
   },

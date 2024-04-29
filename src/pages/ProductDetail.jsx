@@ -5,14 +5,17 @@ import {
   CircularProgress,
   Stack,
   Typography,
+  IconButton,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import { fallbackImage } from "../constants/general.constants";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import $axios from "../axios/axios.instance";
 import DeleteProductDialog from "../components/DeleteProductDialog";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 // Box => div
 // Stack => div which has display flex and direction column
@@ -20,6 +23,9 @@ const ProductDetail = () => {
   const params = useParams();
   const productId = params?.id;
   const navigate = useNavigate();
+
+  // extract userRole from localStorage
+  const userRole = localStorage.getItem("role");
 
   //   fetch product details
   const { isPending, data } = useQuery({
@@ -29,12 +35,31 @@ const ProductDetail = () => {
     },
   });
 
-
-
   // console.log(data);
   const productDetail = data?.data?.product;
 
-  if (isPending) {
+  // ordered quantity tracking
+  const [productCount, setProductCount] = useState(1);
+
+  // add to cart api
+  const { isPending: addItemToCartPending, mutate } = useMutation({
+    mutationKey: ["add-item-to-cart"],
+    mutationFn: async () => {
+      return await $axios.post(`/add/item`, {
+        productId: productId,
+        orderedQuantity: productCount,
+      });
+    },
+
+    onError: (error) => {
+      console.log(error.response.data.message);
+    },
+    onSuccess: () => {
+      navigate("/cart");
+    },
+  });
+
+  if (isPending || addItemToCartPending) {
     return <CircularProgress />;
   }
 
@@ -50,12 +75,11 @@ const ProductDetail = () => {
     <Box
       sx={{
         display: "flex",
-     marginLeft: "18%",
+        marginLeft: "18%",
         boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         padding: "3rem",
         mt: "5rem",
         width: "70%",
-        
       }}
     >
       <Box
@@ -64,7 +88,6 @@ const ProductDetail = () => {
           justifyContent: "center",
           alignItems: "center",
           minWidth: "50%",
-        
         }}
       >
         <img
@@ -115,21 +138,58 @@ const ProductDetail = () => {
           />
         </Stack>
 
-        <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
-          <Button
-            variant="contained"
-            color="success"
-            startIcon={<EditIcon />}
-            fullWidth
-            onClick={()=>{
-              navigate(`/update/product/${productDetail._id}`)
-            }}
-          >
-            Edit
-          </Button>
+        {userRole === "seller" && (
+          <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
+            <Button
+              variant="contained"
+              color="success"
+              startIcon={<EditIcon />}
+              fullWidth
+              onClick={() => {
+                navigate(`/update/product/${productDetail._id}`);
+              }}
+            >
+              Edit
+            </Button>
 
-          <DeleteProductDialog />
-        </Stack>
+            <DeleteProductDialog />
+          </Stack>
+        )}
+
+        {userRole === "buyer" && (
+          <>
+            <Stack direction="row" spacing={3}>
+              <IconButton
+                onClick={() => {
+                  setProductCount((prevCount) => prevCount - 1);
+                }}
+                disabled={productCount === 1}
+              >
+                <RemoveIcon />
+              </IconButton>
+              <Typography variant="h4">{productCount}</Typography>
+              <IconButton
+                onClick={() => {
+                  setProductCount((prevCount) => prevCount + 1);
+                }}
+                disabled={productCount === productDetail?.availableQuantity}
+              >
+                <AddIcon />
+              </IconButton>
+            </Stack>
+
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => {
+                mutate();
+              }}
+              fullWidth
+            >
+              Add to cart
+            </Button>
+          </>
+        )}
       </Box>
     </Box>
   );
