@@ -6,33 +6,51 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Chip, Stack } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { fallbackImage } from "../constants/general.constants";
+import DeleteProductDialog from "./DeleteProductDialog";
 
 const ProductCard = (props) => {
+  const navigate = useNavigate();
   return (
-    <Card
-      sx={{ width: "400px", boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px" }}
-    >
+    <Card sx={{ width: "25%", boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px", display:"flex", flexDirection:"column",minHeight:"600px" }}>
       <CardMedia
-        sx={{ height: 300, width: "100%" }}
-        image="https://www.sceptre.com/image/cache/data/product_gallery/1423-X437BV-FSRD/1-750x522.jpg"
-        title="Samsung"
+        sx={{
+          height: "250px",
+          width: "100%",
+          cursor: "pointer",
+          objectFit: "cover",
+        }}
+        image={props?.image || fallbackImage}
+        title={props.name}
+        onClick={() => {
+          navigate(`/product/details/${props._id}`);
+        }}
       />
-      <CardContent>
+      <CardContent sx={{flexGrow:1,minHeight:"150px",overflow:"hidden"}}>
         <Stack direction="row" justifyContent="space-between">
           <Typography gutterBottom variant="h5" component="div">
             {props.name}
           </Typography>
+
           <Chip label={props.brand} color="secondary" variant="outlined" />
         </Stack>
 
         <Typography>Price:${props.price}</Typography>
 
         <Typography variant="body2" color="text.secondary">
-          {props.description}
+          {props.description}...
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button variant="contained" color="secondary" fullWidth>
+      <CardActions sx={{mt:"auto"}}>
+        <Button
+          variant="contained"
+          color="secondary"
+          fullWidth
+          onClick={() => {
+            navigate(`/product/details/${props._id}`);
+          }}
+        >
           Explore
         </Button>
       </CardActions>
@@ -41,3 +59,5 @@ const ProductCard = (props) => {
 };
 
 export default ProductCard;
+
+

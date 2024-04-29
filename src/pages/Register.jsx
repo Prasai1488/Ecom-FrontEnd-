@@ -51,7 +51,18 @@ const Register = () => {
   return (
     <>
       {isPending && <LinearProgress color="secondary" />}
-      <Box>
+      <Box
+      sx={{
+        // Other styles if you have any
+        backgroundImage: 'linear-gradient(120deg, #e0c3fc 50%, #8ec5fc 100%)',
+        // Ensure the Box component fills the entire screen
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center', // This will vertically align your form in the middle
+        justifyContent: 'center', // This will horizontally align your form in the middle
+      }}
+      >
         <Formik
           initialValues={{
             firstName: "",

@@ -21,7 +21,7 @@ export const registerValidationSchema = Yup.object({
   role: Yup.string()
     .required("Role is required.")
     .trim()
-    .oneOf(["buyer", "seller"], "Role must be either buyer or seller."),
+    .oneOf(["Buyer", "Seller"], "Role must be either buyer or seller."),
   gender: Yup.string()
     .trim()
     .oneOf(

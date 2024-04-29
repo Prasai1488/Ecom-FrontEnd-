@@ -313,6 +313,8 @@ import InfoIcon from "@mui/icons-material/Info"; // Icon for About
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"; // Icon for Products
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { Tooltip } from "@mui/material";
 
 const drawerWidth = 240;
 const navItems = [
@@ -385,7 +387,7 @@ const Header = (props) => {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar component="nav" sx={{ background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)" }}>
+      <AppBar component="nav" sx={{ background: "linear-gradient(120deg, #e0c3fc 50%, #8ec5fc 100%)" }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -431,6 +433,22 @@ const Header = (props) => {
               </Button>
             ))}
           </Box>
+          <Typography sx={{ margin: "0 1rem", fontWeight: "bold" }}>
+            Hi, {localStorage.getItem("firstName")}
+          </Typography>
+          <Tooltip title="Logout">
+            <IconButton
+              sx={{ color: "#fff" }}
+              onClick={() => {
+                navigate("/login");
+
+                // clear local storage
+                localStorage.clear();
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Tooltip>
         </Toolbar>
       </AppBar>
       <nav>

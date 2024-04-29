@@ -9,7 +9,7 @@ const MainLayout = () => {
     <>
       <Header />
       <Box
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" ,flexDirection:"column", margin:"3 rem 0"}}
       ></Box>
       <Outlet />
 
